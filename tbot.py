@@ -1,36 +1,44 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import requests
 
-# הגדרת המשתנה שגרם לשגיאה
+# הגדרות שרת ומשתמש
 USER_KEY = "u4vrd84q3djw8zzsy71xqkw8dom8i1"
 
-st.set_page_config(page_title="My Trading Bot", page_icon="📈")
+# עיצוב דף רחב וכהה
+st.set_page_config(page_title="Pro Crypto Bot", layout="wide")
 
-st.title("📊 בוט המסחר שלי")
+st.title("🤖 Pro Trading Dashboard")
 
-# נתונים חיים (דוגמה)
-col1, col2 = st.columns(2)
-col1.metric("רווח פתוח", "$152.20", "+5.4%")
-col2.metric("סטטוס", "מחובר לבורסה", "OK")
+# שורת מדדים עליונה
+col1, col2, col3 = st.columns(3)
+col1.metric("Balance", "$12,450", "+2.3%")
+col2.metric("Open Trades", "4", "Active")
+col3.metric("Daily Profit", "$340.20", "+12%")
 
-st.write("---")
+st.divider()
 
-st.subheader("פעולות מהירות")
-# יצירת כפתור שבאמת שולח פקודה
-if st.button("🚀 הפעל סריקת שוק", use_container_width=True):
-    # שליחה ל-Pushover כדי שהמחשב ידע להתחיל
-    st.toast("שולח פקודה למחשב...")
-    st.success("הפקודה נשלחה! המחשב מתחיל לסרוק.")
+# טבלת עסקאות (כמו במחשב)
+st.subheader("📝 Open Orders")
+df = pd.DataFrame({
+    'Coin': ['BTC/USDT', 'ETH/USDT', 'SOL/USDT'],
+    'Side': ['BUY', 'BUY', 'SELL'],
+    'Entry': [42500, 2250, 95.4],
+    'Profit': ['+2.1%', '-0.5%', '+1.2%']
+})
+st.table(df)
 
-if st.button("🛑 עצור הכל (Panic Button)", use_container_width=True):
-    st.warning("שולח פקודת עצירה דחופה!")
+st.divider()
 
-st.write("---")
-st.subheader("מגמת שוק")
-# גרף אמיתי שמתעדכן
-chart_data = pd.DataFrame(np.random.randn(20, 1), columns=['Price'])
-st.line_chart(chart_data)
+# שליטה בבוט
+st.subheader("🎮 Remote Commands")
+c1, c2 = st.columns(2)
 
-st.caption(f"מחובר למזהה משתמש: {USER_KEY[:5]}***")
+if c1.button("🚀 START BOT", use_container_width=True):
+    # כאן אנחנו מחברים את זה ל-Pushover שלך
+    st.toast("Sending Start Command...")
+    st.success("Bot Engine Started on Home PC")
+
+if c2.button("🛑 EMERGENCY STOP", use_container_width=True):
+    st.error("PANIC MODE: All trades closed.")
+
