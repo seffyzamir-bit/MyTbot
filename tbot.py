@@ -4,27 +4,28 @@ import pandas as pd
 from datetime import datetime
 import pytz
 
-# --- 1. CORE SYSTEM CONFIGURATION ---
-# מוגדר בראש הקוד כדי למנוע NameError
+# --- 1. GLOBAL CORE VARIABLES ---
+# Critical: These must be defined first at the top level
 BRAND_NAME = "SZ SOLUTIONS"
-USER_KEY = "u4vrd84q3djw8zzsy71xqkw8dom8i1" 
+USER_KEY = "u4vrd84q3djw8zzsy71xqkw8dom8i1" [cite: 2025-12-22]
 israel_tz = pytz.timezone('Asia/Jerusalem')
 
 st.set_page_config(page_title=f"{BRAND_NAME} | SYSTEM", layout="wide")
 
-# --- 2. FUTURISTIC CENTERED UI (CSS) ---
+# --- 2. ADVANCED CENTERED WORKSTATION UI (CSS) ---
 st.markdown("""
     <style>
+    /* Dark Slate Environment */
     .stApp { background-color: #0A0C10; color: #AEB7C0; font-family: 'Inter', sans-serif; }
     
-    /* Centering the main workspace */
+    /* Absolute Centering Logic */
     .block-container {
         max-width: 800px !important;
-        padding-top: 4rem !important;
+        padding-top: 3rem !important;
         margin: auto !important;
     }
 
-    /* Module Containers */
+    /* Professional Modules */
     .st-emotion-cache-12w0qpk { 
         background-color: #111418; 
         padding: 40px; 
@@ -34,21 +35,21 @@ st.markdown("""
         text-align: center !important;
     }
     
-    /* Clean Typography */
+    /* Monochrome Typography */
     h1, h2, h3 { 
         color: #E6EDF3 !important; 
         text-transform: uppercase; 
         letter-spacing: 5px; 
         font-weight: 300 !important;
         text-align: center !important;
-        width: 100%;
+        margin-bottom: 20px !important;
     }
     
-    /* Centered Metrics */
+    /* Metrics alignment */
     [data-testid="stMetric"] { text-align: center !important; }
-    [data-testid="stMetricValue"] { font-size: 28px !important; color: #FFFFFF !important; }
+    [data-testid="stMetricValue"] { font-size: 26px !important; color: #FFFFFF !important; }
 
-    /* Inputs & Buttons */
+    /* Industrial Inputs */
     input { 
         background-color: #0D1117 !important; 
         border: 1px solid #30363D !important; 
@@ -57,6 +58,7 @@ st.markdown("""
         border-radius: 0px !important;
     }
     
+    /* Command Buttons */
     .stButton>button {
         width: 100%;
         border: 1px solid #30363D;
@@ -65,87 +67,89 @@ st.markdown("""
         letter-spacing: 2px;
         text-transform: uppercase;
         border-radius: 0px;
-        transition: 0.4s;
+        font-size: 11px;
     }
     .stButton>button:hover { border-color: #C9D1D9; color: #FFFFFF; }
     
+    /* Execution Primary */
     button[kind="primary"] { border: 1px solid #388BFD !important; color: #388BFD !important; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 3. SESSION MANAGEMENT ---
-if 'log' not in st.session_state: st.session_state.log = []
-if 'view' not in st.session_state: st.session_state.view = None
+# --- 3. PERSISTENT STATE ---
+if 'log_data' not in st.session_state: st.session_state.log_data = []
+if 'view_mode' not in st.session_state: st.session_state.view_mode = None
 
-# --- HEADER ---
+# --- TOP INTERFACE ---
 st.markdown(f"# {BRAND_NAME}")
-now = datetime.now(israel_tz)
-st.markdown(f"**CORE_SYSTEM_ACTIVE** // {now.strftime('%H:%M:%S IST')}")
+curr_time = datetime.now(israel_tz).strftime('%H:%M:%S IST')
+st.markdown(f"**INTERFACE STATUS: OPERATIONAL** // {curr_time}")
 st.divider()
 
-# --- MODULE 01: GLOBAL MARKET ---
+# --- MODULE 01: MARKET INTELLIGENCE ---
 with st.container():
     st.markdown("### Market Intelligence")
-    m1, m2, m3 = st.columns(3)
+    m_col1, m_col2, m_col3 = st.columns(3)
     try:
-        sp = yf.Ticker("^GSPC").history(period="1d")['Close'].iloc[-1]
-        ns = yf.Ticker("^IXIC").history(period="1d")['Close'].iloc[-1]
-        usd = yf.Ticker("USDILS=X").history(period="1d")['Close'].iloc[-1]
-        m1.metric("S&P 500", f"{sp:,.2f}")
-        m2.metric("NASDAQ", f"{ns:,.2f}")
-        m3.metric("USD/ILS", f"{usd:.3f}")
-    except: st.error("LINK_FAILURE")
+        data_sp = yf.Ticker("^GSPC").history(period="1d")['Close'].iloc[-1]
+        data_nas = yf.Ticker("^IXIC").history(period="1d")['Close'].iloc[-1]
+        data_usd = yf.Ticker("USDILS=X").history(period="1d")['Close'].iloc[-1]
+        m_col1.metric("S&P 500", f"{data_sp:,.2f}")
+        m_col2.metric("NASDAQ", f"{data_nas:,.2f}")
+        m_col3.metric("USD/ILS", f"{data_usd:.3f}")
+    except: st.warning("LINK_SYNC_PENDING")
 
-# --- MODULE 02: ANALYSIS ENGINE ---
+# --- MODULE 02: ASSET ANALYSIS ---
 with st.container():
     st.markdown("### Security Analysis")
-    ticker = st.text_input("TICKER_SYMBOL", value="NVDA").upper()
+    target_sym = st.text_input("INPUT TICKER", value="NVDA").upper()
     
-    c1, c2, c3 = st.columns(3)
-    if c1.button("LOAD CHART"): st.session_state.view = "chart"
-    if c2.button("EXTRACT DATA"): st.session_state.view = "intel"
-    if c3.button("CLOSE"): st.session_state.view = None
+    b_col1, b_col2, b_col3 = st.columns(3)
+    if b_col1.button("LOAD CHART"): st.session_state.view_mode = "chart"
+    if b_col2.button("EXTRACT DATA"): st.session_state.view_mode = "intel"
+    if b_col3.button("TERMINATE"): st.session_state.view_mode = None
 
-    if st.session_state.view == "chart":
-        st.line_chart(yf.Ticker(ticker).history(period="1mo")['Close'])
-    elif st.session_state.view == "intel":
-        st.write(yf.Ticker(ticker).info.get('longBusinessSummary', 'N/A'))
+    if st.session_state.view_mode == "chart":
+        st.line_chart(yf.Ticker(target_sym).history(period="1mo")['Close'])
+    elif st.session_state.view_mode == "intel":
+        st.write(yf.Ticker(target_sym).info.get('longBusinessSummary', 'DATA_NOT_FOUND'))
 
 # --- MODULE 03: RISK MATRIX ---
 with st.container():
-    st.markdown("### Execution Matrix")
-    ea, eb, ec = st.columns(3)
-    f_ent = ea.number_input("ENTRY ($)", value=100.0)
-    f_tp = eb.number_input("TP (%)", value=5.0)
-    f_sl = ec.number_input("SL (%)", value=2.0)
+    st.markdown("### Risk Execution Matrix")
+    r_col1, r_col2, r_col3 = st.columns(3)
+    p_ent = r_col1.number_input("ENTRY_VAL", value=100.0)
+    p_tp = r_col2.number_input("TP_PERCENT", value=5.0)
+    p_sl = r_col3.number_input("SL_PERCENT", value=2.0)
     
     if st.button("EXECUTE & LOG PARAMETERS", type="primary"):
-        v_tp = f_ent * (1 + f_tp/100)
-        v_sl = f_ent * (1 - f_sl/100)
+        calc_tp = p_ent * (1 + p_tp/100)
+        calc_sl = p_ent * (1 - p_sl/100)
         
-        st.session_state.log.insert(0, {
-            "TIME": datetime.now(israel_tz).strftime("%H:%M"),
-            "SYM": ticker,
-            "ENT": f"{f_ent:.2f}",
-            "TP": f"{v_tp:.2f}",
-            "SL": f"{v_sl:.2f}"
+        # Internal Recording
+        st.session_state.log_data.insert(0, {
+            "TIMESTAMP": datetime.now(israel_tz).strftime("%H:%M"),
+            "TICKER": target_sym,
+            "ENTRY": f"{p_ent:.2f}",
+            "TP_TARGET": f"{calc_tp:.2f}",
+            "SL_LIMIT": f"{calc_sl:.2f}"
         })
         
         st.markdown("---")
-        res1, res2, res3 = st.columns(3)
-        res1.metric("TARGET", f"${v_tp:.2f}")
-        res2.metric("STOP", f"${v_sl:.2f}")
-        res3.metric("R/R", f"1:{f_tp/f_sl:.1f}")
+        res_c1, res_c2, res_c3 = st.columns(3)
+        res_c1.metric("TARGET", f"${calc_tp:.2f}")
+        res_c2.metric("STOP", f"${calc_sl:.2f}")
+        res_c3.metric("R/R", f"1:{p_tp/p_sl:.1f}")
 
 # --- MODULE 04: SESSION LOG ---
-if st.session_state.log:
+if st.session_state.log_data:
     with st.container():
         st.markdown("### Session Log")
-        st.table(pd.DataFrame(st.session_state.log))
-        if st.button("RESET LOG"):
-            st.session_state.log = []
+        st.table(pd.DataFrame(st.session_state.log_data))
+        if st.button("CLEAR_SESSION_LOG"):
+            st.session_state.log_data = []
             st.rerun()
 
 # --- FOOTER ---
 st.divider()
-st.caption(f"{BRAND_NAME} // SECURE_ID: {USER_KEY[:5]}***")
+st.caption(f"{BRAND_NAME} // SYSTEM_ID: {USER_KEY[:5]}***") [cite: 2025-12-22, 2025-12-23]
