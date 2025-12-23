@@ -4,63 +4,62 @@ import pandas as pd
 from datetime import datetime
 import pytz
 
-# --- 1. CORE SYSTEM DEFINITIONS (CRITICAL ORDER) ---
-# הגדרות אלו חייבות להופיע בראש הקוד ללא רווחים בתחילת השורה
+# --- CORE DEFINITIONS (MUST BE AT TOP LEVEL) ---
+# הגדרות ליבה בראש הקוד למניעת NameError
 BRAND_NAME = "SZ SOLUTIONS"
-USER_KEY = "u4vrd84q3djw8zzsy71xqkw8dom8i1"
+USER_KEY = "u4vrd84q3djw8zzsy71xqkw8dom8i1" # [cite: 2025-12-22]
 israel_tz = pytz.timezone('Asia/Jerusalem')
 
-# --- 2. SYSTEM CONFIGURATION ---
 st.set_page_config(page_title=f"{BRAND_NAME} | SYSTEM", layout="wide")
 
-# --- 3. PROFESSIONAL CENTERED UI (CSS) ---
-st.markdown("""
+# --- HIGH-END CENTERED WORKSTATION UI ---
+st.markdown(f"""
     <style>
-    /* Dark Industrial Theme */
-    .stApp { background-color: #0A0C10; color: #AEB7C0; font-family: 'Inter', sans-serif; }
+    /* Dark Slate Environment */
+    .stApp {{ background-color: #0A0C10; color: #AEB7C0; font-family: 'Inter', sans-serif; }}
     
-    /* Absolute Centering Logic for Mobile & Desktop */
-    .block-container {
+    /* Absolute Centering Logic */
+    .block-container {{
         max-width: 800px !important;
-        padding-top: 2rem !important;
+        padding-top: 3rem !important;
         margin: auto !important;
-    }
+    }}
 
-    /* Modular Workstation Containers */
-    .st-emotion-cache-12w0qpk { 
+    /* Professional Modules */
+    .st-emotion-cache-12w0qpk {{ 
         background-color: #111418; 
-        padding: 35px; 
+        padding: 40px; 
         border-radius: 0px; 
         border: 1px solid #1F242C;
         margin-bottom: 25px;
         text-align: center !important;
-    }
+    }}
     
-    /* Centering Headers & Metrics */
-    h1, h2, h3, [data-testid="stMetric"], [data-testid="stMetricValue"] { 
-        text-align: center !important;
-        justify-content: center !important;
-        width: 100%;
-    }
-    
-    h1, h2, h3 { 
+    /* Monochrome Typography */
+    h1, h2, h3 {{ 
         color: #E6EDF3 !important; 
         text-transform: uppercase; 
         letter-spacing: 5px; 
         font-weight: 300 !important;
-    }
+        text-align: center !important;
+        margin-bottom: 20px !important;
+    }}
+    
+    /* Metrics Alignment */
+    [data-testid="stMetric"] {{ text-align: center !important; }}
+    [data-testid="stMetricValue"] {{ font-size: 26px !important; color: #FFFFFF !important; }}
 
-    /* Precision Inputs */
-    input { 
+    /* Industrial Inputs */
+    input {{ 
         background-color: #0D1117 !important; 
         border: 1px solid #30363D !important; 
         color: #C9D1D9 !important; 
         text-align: center !important;
         border-radius: 0px !important;
-    }
+    }}
     
-    /* High-End Command Buttons */
-    .stButton>button {
+    /* Command Buttons */
+    .stButton>button {{
         width: 100%;
         max-width: 350px;
         border: 1px solid #30363D;
@@ -69,92 +68,93 @@ st.markdown("""
         letter-spacing: 2px;
         text-transform: uppercase;
         border-radius: 0px;
-        margin: 10px auto !important;
+        font-size: 11px;
+        margin: 0 auto;
         display: block;
-    }
-    .stButton>button:hover { border-color: #C9D1D9; color: #FFFFFF; }
+    }}
+    .stButton>button:hover {{ border-color: #C9D1D9; color: #FFFFFF; }}
     
-    /* Execution Button Highlight */
-    button[kind="primary"] { border: 1px solid #388BFD !important; color: #388BFD !important; }
+    /* Execution Primary */
+    button[kind="primary"] {{ border: 1px solid #388BFD !important; color: #388BFD !important; }}
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. DATA PERSISTENCE ---
-if 'history_log' not in st.session_state: st.session_state.history_log = []
-if 'active_mode' not in st.session_state: st.session_state.active_mode = None
+# --- PERSISTENT STATE ---
+if 'log' not in st.session_state: st.session_state.log = []
+if 'view' not in st.session_state: st.session_state.view = None
 
-# --- HEADER SECTION ---
+# --- HEADER ---
 st.markdown(f"# {BRAND_NAME}")
-current_ts = datetime.now(israel_tz).strftime('%H:%M:%S IST')
-st.markdown(f"**STATUS: OPERATIONAL** // {current_ts}")
+curr_time = datetime.now(israel_tz).strftime('%H:%M:%S IST')
+st.markdown(f"**INTERFACE STATUS: OPERATIONAL** // {curr_time}")
 st.divider()
 
 # --- MODULE 01: MARKET INTELLIGENCE ---
 with st.container():
     st.markdown("### Market Intelligence")
-    m1, m2, m3 = st.columns(3)
+    m_col1, m_col2, m_col3 = st.columns(3)
     try:
-        val_sp = yf.Ticker("^GSPC").history(period="1d")['Close'].iloc[-1]
-        val_nas = yf.Ticker("^IXIC").history(period="1d")['Close'].iloc[-1]
-        val_usd = yf.Ticker("USDILS=X").history(period="1d")['Close'].iloc[-1]
-        m1.metric("S&P 500", f"{val_sp:,.2f}")
-        m2.metric("NASDAQ", f"{val_nas:,.2f}")
-        m3.metric("USD/ILS", f"{val_usd:.3f}")
+        # Fetching core market data
+        d_sp = yf.Ticker("^GSPC").history(period="1d")['Close'].iloc[-1]
+        d_nas = yf.Ticker("^IXIC").history(period="1d")['Close'].iloc[-1]
+        d_usd = yf.Ticker("USDILS=X").history(period="1d")['Close'].iloc[-1]
+        m_col1.metric("S&P 500", f"{d_sp:,.2f}")
+        m_col2.metric("NASDAQ", f"{d_nas:,.2f}")
+        m_col3.metric("USD/ILS", f"{d_usd:.3f}")
     except: st.warning("LINK_SYNC_PENDING")
 
-# --- MODULE 02: ANALYSIS ENGINE ---
+# --- MODULE 02: ASSET ANALYSIS ---
 with st.container():
     st.markdown("### Security Analysis")
-    ticker_input = st.text_input("INPUT TICKER", value="NVDA").upper()
+    sym = st.text_input("INPUT TICKER", value="NVDA").upper()
     
-    c1, c2, c3 = st.columns(3)
-    if c1.button("LOAD CHART"): st.session_state.active_mode = "chart"
-    if c2.button("EXTRACT DATA"): st.session_state.active_mode = "intel"
-    if c3.button("TERMINATE"): st.session_state.active_mode = None
+    b1, b2, b3 = st.columns(3)
+    if b1.button("LOAD CHART"): st.session_state.view = "chart"
+    if b2.button("EXTRACT DATA"): st.session_state.view = "intel"
+    if b3.button("TERMINATE"): st.session_state.view = None
 
-    if st.session_state.active_mode == "chart":
-        st.line_chart(yf.Ticker(ticker_input).history(period="1mo")['Close'])
-    elif st.session_state.active_mode == "intel":
-        st.write(yf.Ticker(ticker_input).info.get('longBusinessSummary', 'DATA_OFFLINE'))
+    if st.session_state.view == "chart":
+        st.line_chart(yf.Ticker(sym).history(period="1mo")['Close'])
+    elif st.session_state.view == "intel":
+        st.write(yf.Ticker(sym).info.get('longBusinessSummary', 'DATA_NOT_FOUND'))
 
-# --- MODULE 03: RISK EXECUTION MATRIX ---
+# --- MODULE 03: RISK MATRIX ---
 with st.container():
-    st.markdown("### Risk Matrix")
+    st.markdown("### Risk Execution Matrix")
     r1, r2, r3 = st.columns(3)
-    val_ent = r1.number_input("ENTRY ($)", value=100.0)
-    val_tp_p = r2.number_input("TP (%)", value=5.0)
-    val_sl_p = r3.number_input("SL (%)", value=2.0)
+    f_ent = r1.number_input("ENTRY ($)", value=100.0)
+    f_tp = r2.number_input("TP (%)", value=5.0)
+    f_sl = r3.number_input("SL (%)", value=2.0)
     
-    # המחשבון יופעל רק בלחיצה כאן
     if st.button("EXECUTE & LOG PARAMETERS", type="primary"):
-        res_tp = val_ent * (1 + val_tp_p/100)
-        res_sl = val_ent * (1 - val_sl_p/100)
+        v_tp = f_ent * (1 + f_tp/100)
+        v_sl = f_ent * (1 - f_sl/100)
         
-        # רישום ללוג היומי
-        st.session_state.history_log.insert(0, {
+        # Logging with Israel Timestamp [cite: 2025-12-23]
+        st.session_state.log.insert(0, {
             "TIME": datetime.now(israel_tz).strftime("%H:%M"),
-            "SYM": ticker_input,
-            "ENT": f"{val_ent:.2f}",
-            "TP": f"{res_tp:.2f}",
-            "SL": f"{res_sl:.2f}",
-            "RR": f"{val_tp_p/val_sl_p:.1f}"
+            "SYM": sym,
+            "ENTRY": f"{f_ent:.2f}",
+            "TP": f"{v_tp:.2f}",
+            "SL": f"{v_sl:.2f}",
+            "RR": f"{f_tp/f_sl:.1f}"
         })
         
         st.markdown("---")
         res1, res2, res3 = st.columns(3)
-        res1.metric("TARGET", f"${res_tp:.2f}")
-        res2.metric("STOP", f"${res_sl:.2f}")
-        res3.metric("R/R", f"1:{val_tp_p/val_sl_p:.1f}")
+        res1.metric("TARGET", f"${v_tp:.2f}")
+        res2.metric("STOP", f"${v_sl:.2f}")
+        res3.metric("R/R", f"1:{f_tp/f_sl:.1f}")
 
-# --- MODULE 04: SESSION HISTORY ---
-if st.session_state.history_log:
+# --- MODULE 04: SESSION LOG ---
+if st.session_state.log:
     with st.container():
         st.markdown("### Session Log")
-        st.table(pd.DataFrame(st.session_state.history_log))
-        if st.button("CLEAR_LOG"):
-            st.session_state.history_log = []
+        st.table(pd.DataFrame(st.session_state.log))
+        if st.button("RESET_LOG"):
+            st.session_state.log = []
             st.rerun()
 
-# --- FOOTER ---
+# --- FOOTER (FINAL FIXED SECTION) ---
 st.divider()
-st.caption(f"{BRAND_NAME} // SECURE_ID: {USER_KEY[:5]}***") [cite: 2025-12-22, 2025-12-23]
+st.caption(f"{BRAND_NAME} // SECURE_ID: {USER_KEY[:5]}***") # [cite: 2025-12-22, 2025-12-23]
