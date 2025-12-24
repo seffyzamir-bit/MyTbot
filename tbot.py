@@ -4,157 +4,117 @@ import pandas as pd
 from datetime import datetime
 import pytz
 
-# --- CORE DEFINITIONS (MUST BE AT TOP LEVEL) ---
-# הגדרות ליבה בראש הקוד למניעת NameError
+# --- CORE CONFIGURATION ---
 BRAND_NAME = "SZ SOLUTIONS"
-USER_KEY = "u4vrd84q3djw8zzsy71xqkw8dom8i1" # [cite: 2025-12-22]
+USER_KEY = "u4vrd84q3djw8zzsy71xqkw8dom8i1" [cite: 2025-12-22]
 israel_tz = pytz.timezone('Asia/Jerusalem')
 
-st.set_page_config(page_title=f"{BRAND_NAME} | SYSTEM", layout="wide")
+st.set_page_config(page_title=f"{BRAND_NAME} | OS", layout="wide")
 
-# --- HIGH-END CENTERED WORKSTATION UI ---
-st.markdown(f"""
+# --- CUSTOM INDUSTRIAL DESIGN (CSS) ---
+st.markdown("""
     <style>
-    /* Dark Slate Environment */
-    .stApp {{ background-color: #0A0C10; color: #AEB7C0; font-family: 'Inter', sans-serif; }}
+    .stApp { background-color: #050505; color: #C0C0C0; font-family: 'Inter', sans-serif; }
     
-    /* Absolute Centering Logic */
-    .block-container {{
-        max-width: 800px !important;
-        padding-top: 3rem !important;
-        margin: auto !important;
-    }}
-
-    /* Professional Modules */
-    .st-emotion-cache-12w0qpk {{ 
-        background-color: #111418; 
-        padding: 40px; 
-        border-radius: 0px; 
-        border: 1px solid #1F242C;
-        margin-bottom: 25px;
-        text-align: center !important;
-    }}
+    /* Centering and Container */
+    .block-container { max-width: 800px !important; padding-top: 2rem !important; margin: auto !important; }
     
-    /* Monochrome Typography */
-    h1, h2, h3 {{ 
-        color: #E6EDF3 !important; 
-        text-transform: uppercase; 
-        letter-spacing: 5px; 
-        font-weight: 300 !important;
-        text-align: center !important;
-        margin-bottom: 20px !important;
-    }}
+    /* SZ SOLUTIONS Modules */
+    .st-emotion-cache-12w0qpk { 
+        background-color: #0F0F0F; padding: 25px; border-radius: 0px; 
+        border: 1px solid #1A1A1A; margin-bottom: 20px; text-align: center !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
     
-    /* Metrics Alignment */
-    [data-testid="stMetric"] {{ text-align: center !important; }}
-    [data-testid="stMetricValue"] {{ font-size: 26px !important; color: #FFFFFF !important; }}
-
-    /* Industrial Inputs */
-    input {{ 
-        background-color: #0D1117 !important; 
-        border: 1px solid #30363D !important; 
-        color: #C9D1D9 !important; 
-        text-align: center !important;
-        border-radius: 0px !important;
-    }}
+    /* Typography */
+    h1 { color: #FFFFFF !important; letter-spacing: 8px; font-weight: 200 !important; text-align: center !important; border-bottom: 1px solid #1A1A1A; padding-bottom: 10px; }
+    h3 { color: #808080 !important; text-transform: uppercase; letter-spacing: 3px; font-size: 14px !important; text-align: center !important; }
     
-    /* Command Buttons */
-    .stButton>button {{
-        width: 100%;
-        max-width: 350px;
-        border: 1px solid #30363D;
-        background-color: #161B22;
-        color: #8B949E;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        border-radius: 0px;
-        font-size: 11px;
-        margin: 0 auto;
-        display: block;
-    }}
-    .stButton>button:hover {{ border-color: #C9D1D9; color: #FFFFFF; }}
+    /* Inputs - Matte Black Style */
+    input { 
+        background-color: #0A0A0A !important; border: 1px solid #262626 !important; 
+        color: #FFFFFF !important; text-align: center !important; border-radius: 0px !important;
+    }
     
-    /* Execution Primary */
-    button[kind="primary"] {{ border: 1px solid #388BFD !important; color: #388BFD !important; }}
+    /* Buttons - Silver & Deep Green */
+    .stButton>button {
+        border: 1px solid #262626; background-color: #0F0F0F; color: #C0C0C0;
+        letter-spacing: 1px; text-transform: uppercase; border-radius: 0px; font-size: 10px;
+        transition: 0.3s; width: auto !important; min-width: 100px; margin: 5px auto !important;
+    }
+    .stButton>button:hover { border-color: #404040; color: #FFFFFF; background-color: #1A1A1A; }
+    
+    /* Risk Matrix Button - Deep Green Highlight */
+    button[kind="primary"] { 
+        border: 1px solid #004D00 !important; color: #00FF00 !important; 
+        background-color: #051405 !important; font-weight: bold !important;
+    }
+    
+    /* Close Button (X) */
+    .close-btn { color: #404040; cursor: pointer; float: right; font-size: 18px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- PERSISTENT STATE ---
-if 'log' not in st.session_state: st.session_state.log = []
-if 'view' not in st.session_state: st.session_state.view = None
+# --- STATE ---
+if 'show_matrix' not in st.session_state: st.session_state.show_matrix = False
+if 'analysis_view' not in st.session_state: st.session_state.analysis_view = None
 
-# --- HEADER ---
-st.markdown(f"# {BRAND_NAME}")
-curr_time = datetime.now(israel_tz).strftime('%H:%M:%S IST')
-st.markdown(f"**INTERFACE STATUS: OPERATIONAL** // {curr_time}")
-st.divider()
+# --- HEADER (LOGO) ---
+st.markdown(f"<h1>{BRAND_NAME}</h1>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align:center; color:#404040; font-size:10px; letter-spacing:2px;'>CORE OS // {datetime.now(israel_tz).strftime('%H:%M:%S')}</p>", unsafe_allow_html=True)
 
-# --- MODULE 01: MARKET INTELLIGENCE ---
+# --- MODULE 01: MARKET INTELLIGENCE (INDEX TABLE) ---
 with st.container():
     st.markdown("### Market Intelligence")
-    m_col1, m_col2, m_col3 = st.columns(3)
-    try:
-        # Fetching core market data
-        d_sp = yf.Ticker("^GSPC").history(period="1d")['Close'].iloc[-1]
-        d_nas = yf.Ticker("^IXIC").history(period="1d")['Close'].iloc[-1]
-        d_usd = yf.Ticker("USDILS=X").history(period="1d")['Close'].iloc[-1]
-        m_col1.metric("S&P 500", f"{d_sp:,.2f}")
-        m_col2.metric("NASDAQ", f"{d_nas:,.2f}")
-        m_col3.metric("USD/ILS", f"{d_usd:.3f}")
-    except: st.warning("LINK_SYNC_PENDING")
+    indices = {
+        "S&P 500": "^GSPC", "NASDAQ": "^IXIC", "RSP": "RSP", 
+        "RUSSELL 2000": "^RUT", "BITCOIN": "BTC-USD", "USD/ILS": "USDILS=X"
+    }
+    
+    cols = st.columns(3)
+    for i, (name, ticker) in enumerate(indices.items()):
+        with cols[i % 3]:
+            try:
+                price = yf.Ticker(ticker).history(period="1d")['Close'].iloc[-1]
+                st.metric(name, f"{price:,.2f}" if "USD" not in ticker else f"{price:.3f}")
+                st.markdown(f"[GO] (https://www.google.com/finance/quote/{ticker.replace('^','')})")
+            except: st.caption("SYNC...")
 
-# --- MODULE 02: ASSET ANALYSIS ---
+# --- MODULE 02: SECURITY ANALYSIS (TRACKER) ---
 with st.container():
     st.markdown("### Security Analysis")
-    sym = st.text_input("INPUT TICKER", value="NVDA").upper()
+    # שורת טיקר ארוכה
+    target = st.text_input("TICKER", placeholder="ENTER SYMBOL (e.g. NVDA)", label_visibility="collapsed").upper()
     
-    b1, b2, b3 = st.columns(3)
-    if b1.button("LOAD CHART"): st.session_state.view = "chart"
-    if b2.button("EXTRACT DATA"): st.session_state.view = "intel"
-    if b3.button("TERMINATE"): st.session_state.view = None
+    # כפתורים קטנים ממורכזים
+    c1, c2, c3 = st.columns([1,1,1])
+    if c1.button("LOAD CHART"): st.session_state.analysis_view = "chart"
+    if c2.button("EXTRACT"): st.session_state.analysis_view = "intel"
+    if c3.button("X"): st.session_state.analysis_view = None
 
-    if st.session_state.view == "chart":
-        st.line_chart(yf.Ticker(sym).history(period="1mo")['Close'])
-    elif st.session_state.view == "intel":
-        st.write(yf.Ticker(sym).info.get('longBusinessSummary', 'DATA_NOT_FOUND'))
+    if st.session_state.analysis_view == "chart" and target:
+        st.line_chart(yf.Ticker(target).history(period="1mo")['Close'])
+    elif st.session_state.analysis_view == "intel" and target:
+        st.write(yf.Ticker(target).info.get('longBusinessSummary', 'N/A'))
 
-# --- MODULE 03: RISK MATRIX ---
-with st.container():
-    st.markdown("### Risk Execution Matrix")
-    r1, r2, r3 = st.columns(3)
-    f_ent = r1.number_input("ENTRY ($)", value=100.0)
-    f_tp = r2.number_input("TP (%)", value=5.0)
-    f_sl = r3.number_input("SL (%)", value=2.0)
-    
-    if st.button("EXECUTE & LOG PARAMETERS", type="primary"):
-        v_tp = f_ent * (1 + f_tp/100)
-        v_sl = f_ent * (1 - f_sl/100)
-        
-        # Logging with Israel Timestamp [cite: 2025-12-23]
-        st.session_state.log.insert(0, {
-            "TIME": datetime.now(israel_tz).strftime("%H:%M"),
-            "SYM": sym,
-            "ENTRY": f"{f_ent:.2f}",
-            "TP": f"{v_tp:.2f}",
-            "SL": f"{v_sl:.2f}",
-            "RR": f"{f_tp/f_sl:.1f}"
-        })
-        
-        st.markdown("---")
-        res1, res2, res3 = st.columns(3)
-        res1.metric("TARGET", f"${v_tp:.2f}")
-        res2.metric("STOP", f"${v_sl:.2f}")
-        res3.metric("R/R", f"1:{f_tp/f_sl:.1f}")
+# --- MODULE 03: RISK MATRIX (POP-UP STYLE) ---
+st.markdown("---")
+if st.button("OPEN RISK MATRIX", type="primary"):
+    st.session_state.show_matrix = not st.session_state.show_matrix
 
-# --- MODULE 04: SESSION LOG ---
-if st.session_state.log:
+if st.session_state.show_matrix:
     with st.container():
-        st.markdown("### Session Log")
-        st.table(pd.DataFrame(st.session_state.log))
-        if st.button("RESET_LOG"):
-            st.session_state.log = []
-            st.rerun()
+        st.markdown("### Risk Matrix")
+        m1, m2, m3 = st.columns(3)
+        # ערכים מוטבעים בתוך השורה
+        entry = m1.text_input("ENT", placeholder="ENTRY $")
+        tp = m2.text_input("TP", placeholder="TARGET %")
+        sl = m3.text_input("SL", placeholder="STOP %")
+        
+        if entry and tp and sl:
+            e, t, s = float(entry), float(tp), float(sl)
+            st.success(f"TARGET: ${e*(1+t/100):.2f} | STOP: ${e*(1-s/100):.2f} | R/R: {t/s:.1f}")
 
-# --- FOOTER (FINAL FIXED SECTION) ---
+# --- FOOTER ---
 st.divider()
-st.caption(f"{BRAND_NAME} // SECURE_ID: {USER_KEY[:5]}***") # [cite: 2025-12-22, 2025-12-23]
+st.caption(f"© 2025 {BRAND_NAME} | SYSTEM_ID: {USER_KEY[:5]}***") [cite: 2025-12-22, 2025-12-23]
